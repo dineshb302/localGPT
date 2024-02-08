@@ -5,7 +5,7 @@ from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_compl
 import click
 import torch
 from langchain.docstore.document import Document
-from langchain.embeddings import HuggingFaceInstructEmbeddings
+from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.text_splitter import Language, RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma
 
@@ -152,18 +152,19 @@ def main(device_type):
     texts.extend(python_splitter.split_documents(python_documents))
     logging.info(f"Loaded {len(documents)} documents from {SOURCE_DIRECTORY}")
     logging.info(f"Split into {len(texts)} chunks of text")
-
-    # Create embeddings
-    embeddings = HuggingFaceInstructEmbeddings(
-        model_name=EMBEDDING_MODEL_NAME,
-        model_kwargs={"device": device_type},
-    )
+    logging.info(f"Spliting using {EMBEDDING_MODEL_NAME, device_type}")
+    # model = INSTRUCTOR('hkunlp/instructor-large')
+    # # Create embeddings
+    # embeddings = HuggingFaceInstructEmbeddings(
+    #     model_name=EMBEDDING_MODEL_NAME,
+    #     model_kwargs={"device": device_type},
+    # )
     # change the embedding type here if you are running into issues.
     # These are much smaller embeddings and will work for most appications
     # If you use HuggingFaceEmbeddings, make sure to also use the same in the
     # run_localGPT.py file.
 
-    # embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
+    embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
 
     db = Chroma.from_documents(
         texts,

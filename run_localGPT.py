@@ -4,7 +4,7 @@ import click
 import torch
 import utils
 from langchain.chains import RetrievalQA
-from langchain.embeddings import HuggingFaceInstructEmbeddings
+from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.llms import HuggingFacePipeline
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler  # for streaming response
 from langchain.callbacks.manager import CallbackManager
@@ -119,9 +119,9 @@ def retrieval_qa_pipline(device_type, use_history, promptTemplate_type="llama"):
     - The QA system retrieves relevant documents using the retriever and then answers questions based on those documents.
     """
 
-    embeddings = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": device_type})
+    # embeddings = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": device_type})
     # uncomment the following line if you used HuggingFaceEmbeddings in the ingest.py
-    # embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
+    embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
 
     # load the vectorstore
     db = Chroma(
@@ -241,12 +241,13 @@ def main(device_type, show_sources, use_history, model_type, save_qa):
     logging.info(f"Running on: {device_type}")
     logging.info(f"Display Source Documents set to: {show_sources}")
     logging.info(f"Use history set to: {use_history}")
+    logging.info(f"Model type: {model_type}")
 
     # check if models directory do not exist, create a new one and store models here.
     if not os.path.exists(MODELS_PATH):
         os.mkdir(MODELS_PATH)
 
-    qa = retrieval_qa_pipline(device_type, use_history, promptTemplate_type=model_type)
+    qa = retrieval_qa_pipline(device_type, use_history, promptTemplate_type="mistral")
     # Interactive questions and answers
     while True:
         query = input("\nEnter a query: ")

@@ -7,7 +7,7 @@ import argparse
 import torch
 from flask import Flask, jsonify, request
 from langchain.chains import RetrievalQA
-from langchain.embeddings import HuggingFaceInstructEmbeddings
+from langchain.embeddings import HuggingFaceEmbeddings
 
 # from langchain.embeddings import HuggingFaceEmbeddings
 from run_localGPT import load_model
@@ -30,7 +30,7 @@ SHOW_SOURCES = True
 logging.info(f"Running on: {DEVICE_TYPE}")
 logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
 
-EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
+EMBEDDINGS = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
 
 # uncomment the following line if you used HuggingFaceEmbeddings in the ingest.py
 # EMBEDDINGS = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
